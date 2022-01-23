@@ -12,12 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const supertest_1 = __importDefault(require("supertest"));
-const index_1 = __importDefault(require("../index"));
-const request = (0, supertest_1.default)(index_1.default);
-describe("server tests:", () => {
-    it("server exists", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/');
-        expect(res.status).toBe(200);
-    }));
+const imgManipulation_1 = __importDefault(require("../utilities/imgManipulation"));
+let getResizeImage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let reqX = yield parseInt(req.query.x);
+    let reqY = yield parseInt(req.query.y);
+    try {
+        yield imgManipulation_1.default.resize(reqX, reqY);
+        console.log('resize endpoint called');
+        res.status(200).end();
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
+exports.default = {
+    getResizeImage
+};

@@ -12,12 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const imgManipulation_1 = __importDefault(require("../../utilities/imgManipulation"));
+const fs_1 = __importDefault(require("fs"));
 const supertest_1 = __importDefault(require("supertest"));
-const index_1 = __importDefault(require("../index"));
+const index_1 = __importDefault(require("../../index"));
+let outputImgDir = './public/output.jpeg';
 const request = (0, supertest_1.default)(index_1.default);
-describe("server tests:", () => {
-    it("server exists", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/');
+describe("functions test", () => {
+    it("resize function", () => __awaiter(void 0, void 0, void 0, function* () {
+        yield imgManipulation_1.default.resize(200, 300);
+        expect(fs_1.default.existsSync(outputImgDir)).toBeTruthy();
+    }));
+});
+describe("endpoint test", () => {
+    it("resize endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield request.get('/img/resize?x=200&y=300');
         expect(res.status).toBe(200);
     }));
 });

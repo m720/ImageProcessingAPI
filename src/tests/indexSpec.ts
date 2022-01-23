@@ -1,10 +1,11 @@
-import request from 'supertest';
+import supertest from 'supertest';
 import app from '../index';
 
-
+const request =supertest(app)
 
 describe("server tests:",()=>{
-    it("server exists",()=>{
-       return request(app).get('/').expect(200)
-    })
-})
+    it("server exists", async()=>{
+       const res = await request.get('/');
+       expect(res.status).toBe(200);
+    });
+});
