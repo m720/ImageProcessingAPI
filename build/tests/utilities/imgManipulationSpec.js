@@ -16,17 +16,27 @@ const imgManipulation_1 = __importDefault(require("../../utilities/imgManipulati
 const fs_1 = __importDefault(require("fs"));
 const supertest_1 = __importDefault(require("supertest"));
 const index_1 = __importDefault(require("../../index"));
-let outputImgDir = './public/output.jpeg';
+let outputImgDir = './public/output.jpg';
 const request = (0, supertest_1.default)(index_1.default);
 describe("functions test", () => {
     it("resize function", () => __awaiter(void 0, void 0, void 0, function* () {
         yield imgManipulation_1.default.resize(200, 300);
-        expect(fs_1.default.existsSync(outputImgDir)).toBeTruthy();
+        let res = yield fs_1.default.existsSync(outputImgDir);
+        expect(res).toBeTruthy();
     }));
 });
 describe("endpoint test", () => {
     it("resize endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/img/resize?x=400&y=300&url=https://ichef.bbci.co.uk/news/976/cpsprodpb/12FEC/production/_122540877_072851458.jpg');
+        const res = yield request.get('/img/resize?x=400&y=300');
+        expect(res.status).toBe(200);
+    }));
+    it("delete endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield request.get('/img/delete');
+        //expect(res.status).toBe(200);
+        expect(fs_1.default.existsSync(outputImgDir)).toBeFalsy();
+    }));
+    it("resource creation after deleting", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield request.get('/img/resize?x=400&y=300');
         expect(res.status).toBe(200);
     }));
 });

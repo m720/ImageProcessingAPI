@@ -1,14 +1,17 @@
 # ImageProcessingAPI
  place holder for images with resizing feature using Node js , typescript
 
-#build script
+# build script
   npm run build
 
-#build and test script
+# build and test script
  npm run test
 
-#run project
+# run project
  node ./build
 
-#resize image request example
-http://localhost:3005/img/resize?x=400&y=300&url=https://ichef.bbci.co.uk/news/976/cpsprodpb/12FEC/production/_122540877_072851458.jpg
+# resize image request example
+http://localhost:3006/img/resize?x=400&y=300
+
+# delete image request example
+http://localhost:3006/img/delete
