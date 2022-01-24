@@ -16,6 +16,6 @@ app.get('/', (req, res, next) => {
     console.log("request sent to '/' ");
     res.end();
 });
-app.listen(3002);
-console.log("app is running on http://localhost:3002");
+app.listen(3006);
+console.log("app is running on http://localhost:3006");
 exports.default = app;

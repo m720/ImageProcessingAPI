@@ -11,7 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sharp = require("sharp");
 const fs_1 = require("fs");
-var inputImgDir = './public/Free-HD-Very-Cool-Download-Photos.jpg';
+//var inputImgDir = './public/input.jpg'
+var inputImgDir = './public/input.jpg';
 var myImg;
 let ReadImg = (ImgDir) => __awaiter(void 0, void 0, void 0, function* () {
     myImg = yield fs_1.promises.readFile(ImgDir);
@@ -23,7 +24,7 @@ let resize = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
             sharp(myImg)
                 .resize(x, y)
                 .withMetadata()
-                .toFile('./public/output.jpeg')
+                .toFile('./public/output.jpg')
                 .catch((err) => {
                 console.log(err);
             });
@@ -35,7 +36,7 @@ let resize = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
     else {
         sharp(myImg)
             .resize(x, y)
-            .toFile('./public/output.jpeg')
+            .toFile('./public/output.jpg')
             .catch((err) => {
             console.log(err);
         });

@@ -1,6 +1,7 @@
 const sharp = require("sharp")
 import {promises as fs} from "fs"
-var inputImgDir = './public/Free-HD-Very-Cool-Download-Photos.jpg'
+//var inputImgDir = './public/input.jpg'
+var inputImgDir = './public/input.jpg'
 var myImg: any;
 
 let ReadImg =  async(ImgDir: string )=>{
@@ -13,7 +14,7 @@ let resize=  async (x :number , y: number )=>{
         sharp(myImg)
         .resize(x,y)
         .withMetadata()
-        .toFile('./public/output.jpeg')
+        .toFile('./public/output.jpg')
         .catch( (err: any) =>{
             console.log(err);
         })}catch(err){
@@ -23,7 +24,7 @@ let resize=  async (x :number , y: number )=>{
     }else{
         sharp(myImg)
         .resize(x,y)
-        .toFile('./public/output.jpeg')
+        .toFile('./public/output.jpg')
         .catch( (err: any) =>{
             console.log(err);
         })}

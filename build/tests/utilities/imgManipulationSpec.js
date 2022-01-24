@@ -26,7 +26,7 @@ describe("functions test", () => {
 });
 describe("endpoint test", () => {
     it("resize endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/img/resize?x=200&y=300');
+        const res = yield request.get('/img/resize?x=400&y=300&url=https://ichef.bbci.co.uk/news/976/cpsprodpb/12FEC/production/_122540877_072851458.jpg');
         expect(res.status).toBe(200);
     }));
 });

@@ -6,7 +6,9 @@
   "scripts": {
     "test": "npm run build && npm run jasmine",
     "build": "npx tsc",
-    "jasmine": "jasmine"
+    "jasmine": "jasmine",
+    "lint": "eslint 'index.js'",
+    "prettier": "prettier --config ./src/**/*.ts --write"
   },
   "repository": {
     "type": "git",
@@ -36,10 +38,20 @@
   },
   "dependencies": {
     "@types/body-parser": "^1.19.2",
+    "@types/node-cache": "^4.2.5",
+    "@types/request": "^2.48.8",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
+    "image-downloader": "^4.0.3",
     "jasmine-spec-reporter": "^7.0.0",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.2.0",
+    "node-ts-cache": "^4.4.0",
+    "node-ts-cache-storage-ioredis": "^4.4.0",
+    "node-ts-cache-storage-memory": "^4.4.0",
+    "node-ts-cache-storage-node-fs": "^4.4.0",
     "nodemon": "^2.0.15",
+    "request": "^2.88.2",
     "sharp": "^0.29.3"
   }
 }

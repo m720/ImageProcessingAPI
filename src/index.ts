@@ -14,7 +14,7 @@ app.get('/',(req,res,next)=>{
     res.end();
 })
 
-app.listen(3000);
-console.log("app is running on http://localhost:3000");
+app.listen(3006);
+console.log("app is running on http://localhost:3006");
 
 export default app
