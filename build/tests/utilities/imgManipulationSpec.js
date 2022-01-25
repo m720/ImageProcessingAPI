@@ -20,7 +20,7 @@ const outputImgDir = "./public/output.jpg";
 const request = (0, supertest_1.default)(index_1.default);
 describe("functions test", () => {
     it("resize function", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield imgManipulation_1.default.resize(200, 300, "input.jpg");
+        yield imgManipulation_1.default.resize(200, 300, "input.jpg", () => { });
         yield setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield fs_1.default.existsSync(outputImgDir);
             expect(res).toBeTruthy();
@@ -38,7 +38,9 @@ describe("endpoint test", () => {
         // expect(fs.existsSync(outputImgDir)).toBeFalsy();
     }), 10000);
     it("resource creation after deleting", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get("/img/resize?x=400&y=300&name=input2.jpg");
-        expect(res.status).toBe(200);
+        setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield request.get("/img/resize?x=400&y=300&name=input2.jpg");
+            expect(res.status).toBe(200);
+        }), 2000);
     }), 15000);
 });

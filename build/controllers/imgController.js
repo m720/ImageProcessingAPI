@@ -15,17 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const imgManipulation_1 = __importDefault(require("../utilities/imgManipulation"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const fs_1 = __importDefault(require("fs"));
-// import request from "request"
+const path_1 = __importDefault(require("path"));
 const mycache = new node_cache_1.default();
-// const downloadImage = async(url: string, cb: Function)=>{
-// //downloading image and saving as 'input.jpg'
-//     await request.head(url, async function(err, res, body){
-//         await request(url).pipe(fs.createWriteStream('./public/input.jpg')).on('close', ()=>{
-//             console.log('download done');
-//             cb();
-//         });
-//       });
-// }
 const getResizeImage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.query.x == null || req.query.y == null || req.query.name == null) {
@@ -42,45 +33,53 @@ const getResizeImage = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             const reqX = yield parseInt(req.query.x);
             const reqY = yield parseInt(req.query.y);
             const reqName = req.query.name;
-            const fullName = "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/" +
-                reqName;
+            const fullName = path_1.default.join(__dirname, "../../public", reqName);
             // checks if the file exists
             //  console.log("does the file exist",await fs.existsSync(fullName));
-            if (yield !fs_1.default.existsSync(fullName)) {
+            if (!fs_1.default.existsSync(fullName)) {
                 res.status(404).end("file not found");
             }
             else {
-                const stored = yield mycache.get("myKey");
+                const stored = mycache.get("myKey");
                 if (stored) {
                     if (stored.x === reqX &&
                         stored.y === reqY &&
                         stored.fileName === reqName) {
-                        yield res
+                        res
                             .status(200)
-                            .sendFile("C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg");
-                        res.end("done");
-                        // console.log("already resized");
+                            .sendFile(path_1.default.join(__dirname, "../../public", "output.jpg"));
                     }
                     else {
-                        yield imgManipulation_1.default.resize(reqX, reqY, reqName);
-                        // console.log('resize endpoint called');
-                        const Obj = { x: reqX, y: reqY, fileName: reqName };
-                        mycache.set("myKey", Obj, 100000);
-                        yield res
-                            .status(200)
-                            .sendFile("C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg");
-                        res.end("done");
+                        imgManipulation_1.default
+                            .resize(reqX, reqY, reqName, () => {
+                            const Obj = { x: reqX, y: reqY, fileName: reqName };
+                            mycache.set("myKey", Obj, 100000);
+                            try {
+                                setTimeout(() => {
+                                    res
+                                        .status(200)
+                                        .sendFile(path_1.default.join(__dirname, "../../public", "output.jpg"));
+                                }, 2000);
+                            }
+                            catch (err) {
+                                res.status(500).end("server error");
+                            }
+                        })
+                            .catch((err) => {
+                            res.status(500).end("server Error", err);
+                        });
                     }
                 }
                 else {
-                    yield imgManipulation_1.default.resize(reqX, reqY, reqName);
-                    // console.log('resize endpoint called');
-                    const Obj = { x: reqX, y: reqY, fileName: reqName };
-                    mycache.set("myKey", Obj, 100000);
-                    yield res
-                        .status(200)
-                        .sendFile("C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg");
-                    res.end("done");
+                    imgManipulation_1.default.resize(reqX, reqY, reqName, () => {
+                        const Obj = { x: reqX, y: reqY, fileName: reqName };
+                        mycache.set("myKey", Obj, 100000);
+                        setTimeout(() => {
+                            res
+                                .status(200)
+                                .sendFile(path_1.default.join(__dirname, "../../public", "output.jpg"));
+                        }, 2000);
+                    });
                 }
             }
         }
@@ -89,17 +88,12 @@ const getResizeImage = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         res.status(500).end("server Error");
     }
 });
-// try{
-//     await downloadImage(imgUrl, resizeFunction);
-// }catch(err){
-//     console.log(err);
-// }
 const getDeleteImage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // this request deletes the cached data+ the output.jpg file
     try {
         yield mycache.del("myKey");
         yield setTimeout(() => {
-            fs_1.default.unlinkSync("C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg");
+            fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../public", "output.jpg"));
         }, 2000);
         // console.log("image deleted");
         res.status(200).end("image deleted");

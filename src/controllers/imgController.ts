@@ -2,7 +2,8 @@ import imgManipulation from "../utilities/imgManipulation";
 import NodeCache from "node-cache";
 import fs from "fs";
 import express from "express";
-// import request from "request"
+import path from "path";
+
 const mycache = new NodeCache();
 
 type storingObj = {
@@ -10,16 +11,6 @@ type storingObj = {
   x: number;
   y: number;
 };
-
-// const downloadImage = async(url: string, cb: Function)=>{
-// //downloading image and saving as 'input.jpg'
-//     await request.head(url, async function(err, res, body){
-//         await request(url).pipe(fs.createWriteStream('./public/input.jpg')).on('close', ()=>{
-//             console.log('download done');
-//             cb();
-//         });
-//       });
-// }
 
 const getResizeImage = async (
   req: express.Request,
@@ -41,51 +32,53 @@ const getResizeImage = async (
       const reqX: number = await parseInt(req.query.x as string);
       const reqY: number = await parseInt(req.query.y as string);
       const reqName: string = req.query.name as string;
-      const fullName: string =
-        "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/" +
-        reqName;
+      const fullName: string = path.join(__dirname, "../../public", reqName);
       // checks if the file exists
       //  console.log("does the file exist",await fs.existsSync(fullName));
-      if (await !fs.existsSync(fullName)) {
+      if (!fs.existsSync(fullName)) {
         res.status(404).end("file not found");
       } else {
-        const stored = await mycache.get<storingObj>("myKey");
+        const stored = mycache.get<storingObj>("myKey");
         if (stored) {
           if (
             stored.x === reqX &&
             stored.y === reqY &&
             stored.fileName === reqName
           ) {
-            await res
+            res
               .status(200)
-              .sendFile(
-                "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg"
-              );
-            res.end("done");
-            // console.log("already resized");
+              .sendFile(path.join(__dirname, "../../public", "output.jpg"));
           } else {
-            await imgManipulation.resize(reqX, reqY, reqName);
-            // console.log('resize endpoint called');
-            const Obj: storingObj = { x: reqX, y: reqY, fileName: reqName };
-            mycache.set("myKey", Obj, 100000);
-            await res
-              .status(200)
-              .sendFile(
-                "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg"
-              );
-            res.end("done");
+            imgManipulation
+              .resize(reqX, reqY, reqName, () => {
+                const Obj: storingObj = { x: reqX, y: reqY, fileName: reqName };
+                mycache.set("myKey", Obj, 100000);
+                try {
+                  setTimeout(() => {
+                    res
+                      .status(200)
+                      .sendFile(
+                        path.join(__dirname, "../../public", "output.jpg")
+                      );
+                  }, 2000);
+                } catch (err) {
+                  res.status(500).end("server error");
+                }
+              })
+              .catch((err) => {
+                res.status(500).end("server Error", err);
+              });
           }
         } else {
-          await imgManipulation.resize(reqX, reqY, reqName);
-          // console.log('resize endpoint called');
-          const Obj: storingObj = { x: reqX, y: reqY, fileName: reqName };
-          mycache.set("myKey", Obj, 100000);
-          await res
-            .status(200)
-            .sendFile(
-              "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg"
-            );
-          res.end("done");
+          imgManipulation.resize(reqX, reqY, reqName, () => {
+            const Obj: storingObj = { x: reqX, y: reqY, fileName: reqName };
+            mycache.set("myKey", Obj, 100000);
+            setTimeout(() => {
+              res
+                .status(200)
+                .sendFile(path.join(__dirname, "../../public", "output.jpg"));
+            }, 2000);
+          });
         }
       }
     }
@@ -93,12 +86,6 @@ const getResizeImage = async (
     res.status(500).end("server Error");
   }
 };
-
-// try{
-//     await downloadImage(imgUrl, resizeFunction);
-// }catch(err){
-//     console.log(err);
-// }
 
 const getDeleteImage = async (
   req: express.Request,
@@ -110,9 +97,7 @@ const getDeleteImage = async (
   try {
     await mycache.del("myKey");
     await setTimeout(() => {
-      fs.unlinkSync(
-        "C:/Users/moatasem/Documents/Projects/NodeJS/ImageProcessingAPI/public/output.jpg"
-      );
+      fs.unlinkSync(path.join(__dirname, "../../public", "output.jpg"));
     }, 2000);
     // console.log("image deleted");
     res.status(200).end("image deleted");

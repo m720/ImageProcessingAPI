@@ -8,7 +8,7 @@ const request = supertest(app);
 
 describe("functions test", () => {
   it("resize function", async () => {
-    await imgManipulation.resize(200, 300, "input.jpg");
+    await imgManipulation.resize(200, 300, "input.jpg",()=>{});
     await setTimeout(async () => {
       const res: boolean = await fs.existsSync(outputImgDir);
 
@@ -33,8 +33,10 @@ describe("endpoint test", () => {
   }, 10000);
 
   it("resource creation after deleting", async () => {
-    const res = await request.get("/img/resize?x=400&y=300&name=input2.jpg");
-
-    expect(res.status).toBe(200);
+    setTimeout(async () => {
+      const res = await request.get("/img/resize?x=400&y=300&name=input2.jpg");
+      expect(res.status).toBe(200);
+    }, 2000);
+    
   }, 15000);
 });

@@ -14,17 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sharp_1 = __importDefault(require("sharp"));
 const fs_1 = require("fs");
-const resize = (x, y, fileName) => __awaiter(void 0, void 0, void 0, function* () {
+const path_1 = __importDefault(require("path"));
+const resize = (x, y, fileName, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const inputImgDir = "./public/" + fileName;
+        const inputImgDir = path_1.default.join(__dirname, "../../public", fileName);
         const myImg = yield fs_1.promises.readFile(inputImgDir);
         (0, sharp_1.default)(myImg)
             .resize(x, y)
             .withMetadata()
-            .toFile("./public/output.jpg")
+            .toFile(path_1.default.join(__dirname, "../../public", "output.jpg"))
             .catch((err) => {
             console.log(err);
         });
+        return done();
     }
     catch (err) {
         console.log(err);
