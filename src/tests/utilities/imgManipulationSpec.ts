@@ -35,6 +35,7 @@ describe("endpoint test", () => {
   it("resource creation after deleting", async () => {
     setTimeout(async () => {
       const res = await request.get("/img/resize?x=400&y=300&name=input2.jpg");
+      
       expect(res.status).toBe(200);
     }, 2000);
     

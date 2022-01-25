@@ -29,6 +29,10 @@ const getResizeImage = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             res.status(404);
             res.end("please enter numbers as height and width");
         }
+        else if (parseInt(req.query.x) <= 0 || parseInt(req.query.y) <= 0) {
+            res.status(404);
+            res.end("please enter a positive integer number for hight and width");
+        }
         else {
             const reqX = yield parseInt(req.query.x);
             const reqY = yield parseInt(req.query.y);
@@ -93,14 +97,20 @@ const getDeleteImage = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         yield mycache.del("myKey");
         yield setTimeout(() => {
-            fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../public", "output.jpg"));
+            if (fs_1.default.existsSync(path_1.default.join(__dirname, "../../public", "output.jpg"))) {
+                console.log(fs_1.default.existsSync(path_1.default.join(__dirname, "../../public", "output.jpg")));
+                fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../public", "output.jpg"));
+                // console.log("image deleted");
+                res.status(200).end("image deleted");
+            }
+            else {
+                res.status(200).end("image already deleted");
+            }
         }, 2000);
-        // console.log("image deleted");
-        res.status(200).end("image deleted");
     }
     catch (err) {
         console.log(err);
-        res.status(500).end("error");
+        res.status(404).end("file not found");
     }
 });
 exports.default = {

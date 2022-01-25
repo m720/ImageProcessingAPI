@@ -13,6 +13,10 @@ app.get("/", (req, res, next) => {
     // console.log("request sent to '/' ");
     res.end();
 });
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 app.listen(3001);
 console.log("app is running on http://localhost:3001");
 exports.default = app;

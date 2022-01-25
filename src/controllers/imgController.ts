@@ -28,6 +28,12 @@ const getResizeImage = async (
     ) {
       res.status(404);
       res.end("please enter numbers as height and width");
+    } else if (
+      parseInt(req.query.x as string) <= 0 ||
+      parseInt(req.query.y as string) <= 0
+    ) {
+      res.status(404);
+      res.end("please enter a positive integer number for hight and width");
     } else {
       const reqX: number = await parseInt(req.query.x as string);
       const reqY: number = await parseInt(req.query.y as string);
@@ -97,13 +103,20 @@ const getDeleteImage = async (
   try {
     await mycache.del("myKey");
     await setTimeout(() => {
-      fs.unlinkSync(path.join(__dirname, "../../public", "output.jpg"));
+      if (fs.existsSync(path.join(__dirname, "../../public", "output.jpg"))) {
+        console.log(
+          fs.existsSync(path.join(__dirname, "../../public", "output.jpg"))
+        );
+        fs.unlinkSync(path.join(__dirname, "../../public", "output.jpg"));
+        // console.log("image deleted");
+        res.status(200).end("image deleted");
+      } else {
+        res.status(200).end("image already deleted");
+      }
     }, 2000);
-    // console.log("image deleted");
-    res.status(200).end("image deleted");
   } catch (err) {
     console.log(err);
-    res.status(500).end("error");
+    res.status(404).end("file not found");
   }
 };
 
