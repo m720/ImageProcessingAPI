@@ -8,38 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const sharp = require("sharp");
+const sharp_1 = __importDefault(require("sharp"));
 const fs_1 = require("fs");
-//var inputImgDir = './public/input.jpg'
-var inputImgDir = './public/input.jpg';
-var myImg;
-let ReadImg = (ImgDir) => __awaiter(void 0, void 0, void 0, function* () {
-    myImg = yield fs_1.promises.readFile(ImgDir);
-});
-let resize = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!myImg) {
-        try {
-            yield ReadImg(inputImgDir);
-            sharp(myImg)
-                .resize(x, y)
-                .withMetadata()
-                .toFile('./public/output.jpg')
-                .catch((err) => {
-                console.log(err);
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-    else {
-        sharp(myImg)
+const resize = (x, y, fileName) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const inputImgDir = "./public/" + fileName;
+        const myImg = yield fs_1.promises.readFile(inputImgDir);
+        (0, sharp_1.default)(myImg)
             .resize(x, y)
-            .toFile('./public/output.jpg')
+            .withMetadata()
+            .toFile("./public/output.jpg")
             .catch((err) => {
             console.log(err);
         });
+    }
+    catch (err) {
+        console.log(err);
     }
 });
 exports.default = { resize };

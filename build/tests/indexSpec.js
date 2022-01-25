@@ -17,7 +17,7 @@ const index_1 = __importDefault(require("../index"));
 const request = (0, supertest_1.default)(index_1.default);
 describe("server tests:", () => {
     it("server exists", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/');
+        const res = yield request.get("/");
         expect(res.status).toBe(200);
     }));
 });

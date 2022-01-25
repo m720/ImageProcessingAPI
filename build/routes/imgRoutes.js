@@ -6,6 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const imgController_1 = __importDefault(require("../controllers/imgController"));
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-router.get('/resize', imgController_1.default.getResizeImage);
-router.get('/delete', imgController_1.default.getDeleteImage);
+router.get("/resize", imgController_1.default.getResizeImage);
+router.get("/delete", imgController_1.default.getDeleteImage);
 exports.default = router;

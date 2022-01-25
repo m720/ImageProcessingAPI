@@ -16,27 +16,29 @@ const imgManipulation_1 = __importDefault(require("../../utilities/imgManipulati
 const fs_1 = __importDefault(require("fs"));
 const supertest_1 = __importDefault(require("supertest"));
 const index_1 = __importDefault(require("../../index"));
-let outputImgDir = './public/output.jpg';
+const outputImgDir = "./public/output.jpg";
 const request = (0, supertest_1.default)(index_1.default);
 describe("functions test", () => {
     it("resize function", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield imgManipulation_1.default.resize(200, 300);
-        let res = yield fs_1.default.existsSync(outputImgDir);
-        expect(res).toBeTruthy();
-    }));
+        yield imgManipulation_1.default.resize(200, 300, "input.jpg");
+        yield setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield fs_1.default.existsSync(outputImgDir);
+            expect(res).toBeTruthy();
+        }), 2000);
+    }), 15000);
 });
 describe("endpoint test", () => {
     it("resize endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/img/resize?x=400&y=300');
+        const res = yield request.get("/img/resize?x=400&y=300&name=input2.jpg");
         expect(res.status).toBe(200);
-    }));
+    }), 15000);
     it("delete endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/img/delete');
-        //expect(res.status).toBe(200);
-        expect(fs_1.default.existsSync(outputImgDir)).toBeFalsy();
-    }));
-    it("resource creation after deleting", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.get('/img/resize?x=400&y=300');
+        const res = yield request.get("/img/delete");
         expect(res.status).toBe(200);
-    }));
+        // expect(fs.existsSync(outputImgDir)).toBeFalsy();
+    }), 10000);
+    it("resource creation after deleting", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield request.get("/img/resize?x=400&y=300&name=input2.jpg");
+        expect(res.status).toBe(200);
+    }), 15000);
 });
